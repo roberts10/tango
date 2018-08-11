@@ -1,5 +1,5 @@
 {% extends 'rango/base.html' %}    
-{% load staticfiles %}
+{% load bootstrap_toolkit %}
 
 {% block title_block %}
  {{category.name}}
@@ -20,7 +20,9 @@
         {% else %}
             The specified category does not exist
         {% endif %}
-        </div>
+        <div>
+        {% if user.is_authenticated %}
         <a href="{% url 'add_page' category.slug %}">Add Page</a> </br>
-         <div>
+        {% endif %}
+        </div>
 {% endblock %}
