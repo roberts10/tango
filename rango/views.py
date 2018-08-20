@@ -7,6 +7,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from rango.webhose_search import run_query
+from django.shortcuts import redirect
 import os
 
 def get_server_side_cookie(request, cookie, default_val=None):
@@ -52,6 +54,14 @@ def about(request):
 
 def show_category(request, category_name_slug):
     context_dict={}
+    result_list = []
+
+    if request.method == "POST":
+        query = request.POST['query'].strip()
+        if query:
+            result_list = run_query(query)
+            context_dict['result_list']=result_list
+
     try:
         category = Category.objects.get(slug=category_name_slug)
         pages = Page.objects.filter(category=category)
@@ -99,6 +109,60 @@ def add_page(request, category_name_slug):
             print(form.errors)
     context_dict = {'form':form, 'category': category}
     return render(request, 'rango/add_page.html', context_dict)
+
+def track_url(request):
+    page_id = None
+    if request.method == "GET":
+        if 'page_id' in request.GET:
+            page_id = request.GET['page_id']
+            page = Page.objects.get(id=page_id)
+            page.views += 1
+            page.save()
+            return redirect(page.url)
+
+@login_required
+def register_profile(request):
+    form = UserProfileForm()
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            user_profile = form.save(commit=False)
+            user_profile.user = request.user
+            user_profile.save()
+            print('saved')
+
+            return redirect('index')
+        else:
+            print(form.errors)
+
+    context_dict = {'form':form}
+    return render(request, 'rango/profile_registration.html', context_dict)
+
+@login_required
+def profile(request, username):
+    try:
+        user = User.objects.get(username=username)
+        print(username + "retrieved")
+    except:
+        User.DoesNotExist
+        return redirect('index')
+
+    userprofile = UserProfile.objects.get_or_create(user=user)[0]
+    print(userprofile.website)
+    form = UserProfileForm({'website':userprofile.website, 'picture':userprofile.picture})
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
+        if form.is_valid():
+            form.save(commit=True)
+            return redirect('profile', user.username)
+        else:
+            print(form.errors)
+    else:
+        print('NOT POST')
+
+    return render(request, 'rango/profile.html', {'userprofile':userprofile, 'selecteduser': user, 'form':form})
 
 #def register(request):
 #        registered = False 
