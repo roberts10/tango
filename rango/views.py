@@ -164,56 +164,70 @@ def profile(request, username):
 
     return render(request, 'rango/profile.html', {'userprofile':userprofile, 'selecteduser': user, 'form':form})
 
-#def register(request):
-#        registered = False 
-#        if request.method == 'POST':
-#            user_form  = UserForm(data=request.POST)
-#            profile_form = UserProfileForm(data=request.POST)
-#            if user_form.is_valid() and profile_form.is_valid():
-#                user = user_form.save()
-#                user.set_password(user.password)
-#                user.save()
-#
-#                profile = profile_form.save(commit=False)
-#                profile.user = user
-#                if 'picture' in request.FILES:
-#                    profile.picture = request.FILES['picture']
-#
-#                profile.save()
-#            else:
-#                print(user_form.errors, profile_form.errors)
-#        else:
-#            user_form = UserForm()
-#            profile_form = UserProfileForm()
-#
-#        return render(request, 'rango/register.html', {'user_form' : user_form, 'profile_form': profile_form, 'registered': registered})
-#
-#def user_login(request):
-#    if request.method == 'POST':
-#        username = request.POST.get('username')
-#        password = request.POST.get('password')
-#
-#        user = authenticate(username=username, password=password)
-#        
-#        if user:
-#            if user.is_active:
-#                login(request, user)
-#                return HttpResponseRedirect(reverse('index'))
-#            else:
-#                return HttpResponse("Your Rango account is disabled")
-#        else:
-#            print("Invalid login details: {0}, {1}".format(username, password))
-#            return HttpResponse("Invalid login details supplied.")
-#    else:
-#        return render(request, 'rango/login.html', {})
-#
-#@login_required
-#def restricted(request):
-#    return render(request, 'rango/restricted.html', {})
-#
-#@login_required
-#def user_logout(request):
-#    logout(request)
-#    return HttpResponseRedirect(reverse('index'))
-#
+@login_required
+def list_profiles(request):
+    userprofile_list = UserProfile.objects.all()
 
+    return render(request, 'rango/list_profiles.html', {'userprofile_list':userprofile_list})
+
+@login_required
+def like_category(request):
+    cat_id = None
+    if request.method == 'GET':
+        cat_id = request.GET['category_id']
+        likes = 0
+        if cat_id:
+            cat = Category.objects.get(id=int(cat_id))
+            if cat:
+                likes = cat.likes + 1
+                cat.likes = likes
+                cat.save()
+                print('if cat')
+    return HttpResponse(likes)
+
+def get_category_list(max_results=0, starts_with=''):
+    cat_list = []
+    if starts_with:
+        cat_list = Category.objects.filter(name__istartswith=starts_with)
+
+    if max_results > 0:
+        if len(cat_list) > max_results:
+            cat_list = cat_list[:max_results]
+    
+    return cat_list
+
+def suggest_category(request):
+    cat_list = []
+    starts_with = ''
+
+    if request.method == 'GET':
+        starts_with = request.GET['suggestion']
+        print(starts_with)
+
+    cat_list = get_category_list(8, starts_with)
+
+    return render(request, 'rango/cats.html', {'cats': cat_list })
+
+@login_required
+def auto_add_page(request):
+    cat_id = None
+    url = None
+    title = None
+    context_dict = {}
+    print('got to view')
+    if request.method == 'GET':
+        cat_id = request.GET['category_id']
+        url = request.GET['url']
+        title = request.GET['title']
+        if cat_id:
+            category = Category.objects.get(id=int(cat_id))
+            p = Page.objects.get_or_create(category=category, title=title, url=url)
+            pages = Page.objects.filter(category=category).order_by('-views')
+            
+            context_dict['pages'] = pages
+            context_dict['category'] = category
+
+    return render(request, 'rango/category.html', context_dict)
+
+
+    

@@ -8,6 +8,13 @@
 {% block body_block %}
         {% if category %}
             <h1>{{category.name}}</h1>
+            <div>
+                <strong id="like_count">{{category.likes}}</strong> people like this category
+                {% if user.is_authenticated %}
+                    <button id="likes" data-catid="{{category.id}}" class="btn btn-primary btn-sm" type="button"> Like 
+                    </button>
+                {% endif %}
+            </div>
             {% if pages %}
                 <ul>
                     {% for page in pages %}
@@ -48,6 +55,9 @@
                         <a href="{{result.link}}">{{result.title}}</a>
                     </h4>
                     <p class="list-group-item-text">{{result.summary}}</p>
+                    {% if user.is_authenticated %}
+                    <button data-catid="{{category.id}}" data-title="{{result.title}}" data-url="{{result.link}}" class="rango-add btn btn-info btn-sm" type="button">Add</button>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

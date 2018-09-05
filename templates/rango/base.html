@@ -21,6 +21,8 @@
   </head>
 
   <body>
+
+    <!-- NAVBAR CODE -->
     <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
       <button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -46,6 +48,10 @@
           <li class="nav-item">
               <a class="nav-link" href="{% url 'profile' user.username %}">Profile </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'list_profiles' %}">List Profiles</a>
+            </li>
+
         {% else %}
            <li class="nav-item">
               <a class="nav-link" href="{% url 'registration_register' %}">Register Here</a>
@@ -58,13 +64,24 @@
     </div>
     </nav>
 
+    <!-- SIDEBAR CODE -->
     <div class="container-fluid">
       <div class="row">
         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-            {% block sidebar_block %}
-                {% get_category_list category %}
-            {% endblock %}
+            <ul class="nav nav-list flex-column">
+                <li class="nav-tem">Type to find a category</li>
+                <form action="/rango/suggest/" method="GET">
+                    <li class="nav-item">
+                        <input class="search-query form-control" type="text" name="suggestion" value="" id="suggestion" /> 
+                    </li>
+                </form>
+            </ul>
+            <hr>
+            <div id="cats">
+            </div>
         </nav>
+
+    <!-- MAIN CODE -->
         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
             {% block body_block %}{% endblock %}
         </main>
@@ -79,5 +96,6 @@
     <script src="http://v4-alpha.getbootstrap.com/dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="http://v4-alpha.getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="{% static 'js/rango-ajax.js' %}"></script>
   </body>
 </html>
