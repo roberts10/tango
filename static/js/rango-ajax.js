@@ -1,5 +1,7 @@
  $(document).ready(function (){
 
+    //$("body").tooltip({selector: '[data-toggle=tooltip]'});
+    
     $("#about-btn").click(function(event){
         alert("you clicked with Jquery");
     });

@@ -18,6 +18,12 @@
 
     <!-- Custom styles for this template -->
     <link href="http://v4-alpha.getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
+
+
+  <script src="{% static 'jquery-1.12.4.min.js' %}"></script>
+  <script src="{% static 'bootstrap-3.3.6/dist/js/bootstrap.min.js' %}"></script>
+
+   
   </head>
 
   <body>
@@ -42,6 +48,9 @@
           <li class="nav-item">
               <a class="nav-link" href="{% url 'add_category' %}">Add a New Category</a>
           </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{% url 'virtual_attending' %}">Virtual Attending</a>
+          </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'auth_logout' %}?next=/rango/">Logout</a>
           </li>
@@ -51,6 +60,7 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'list_profiles' %}">List Profiles</a>
             </li>
+        
 
         {% else %}
            <li class="nav-item">
@@ -64,7 +74,7 @@
     </div>
     </nav>
 
-    <!-- SIDEBAR CODE -->
+    <!-- SIDEBAR CODE **NOT ONLINE 
     <div class="container-fluid">
       <div class="row">
         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
@@ -80,6 +90,7 @@
             <div id="cats">
             </div>
         </nav>
+    -->
 
     <!-- MAIN CODE -->
         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
@@ -92,10 +103,15 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <!--  COMMENT out commend to load from CDN
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="http://v4-alpha.getbootstrap.com/dist/js/bootstrap.min.js"></script>
+    -->
+   
+    <!-- Load .js file for custom site-specific functions -->
+    <script src="{% static 'js/rango-ajax.js' %}"></script>
+
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="http://v4-alpha.getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
-    <script src="{% static 'js/rango-ajax.js' %}"></script>
   </body>
 </html>

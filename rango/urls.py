@@ -14,6 +14,7 @@ urlpatterns = [
         url(r'^like/$', views.like_category, name='like_category'),
         url(r'^suggest/$', views.suggest_category, name='suggest_category'),
         url(r'^add/$', views.auto_add_page, name='auto_add_page'),
+        url(r'^VA/$', views.virtual_attending, name='virtual_attending'),
 #        url(r'register/$', views.register, name='register'),
 #        url(r'login/$', views.user_login, name='login'),
 #        url(r'restricted/$', views.restricted, name='restricted'),

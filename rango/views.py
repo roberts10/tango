@@ -229,5 +229,8 @@ def auto_add_page(request):
 
     return render(request, 'rango/category.html', context_dict)
 
-
+@login_required
+def virtual_attending(request):
+    context_dict = {}
+    return render(request, 'rango/VA.html', context_dict)
     
