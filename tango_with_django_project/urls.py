@@ -21,10 +21,10 @@ from registration.backends.simple.views import RegistrationView
 
 class MyRegistrationView(RegistrationView):
     def get_success_url(self, user):
-        return 'register_profile'
+        return '/VA/'
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'^$', views.virtual_attending, name='VA'),
     url(r'^rango/', include('rango.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^about/', views.about, name ='about'),
